@@ -1,18 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <Leds.h>
 
 
-// pines 
-#define LED1 6
-#define LED2 4
-
-
-void setup() {
-  pinMode(LED1,OUTPUT);
-  pinMode(LED2,OUTPUT);
-
-}
+void setup();
 
 void loop() {
   digitalWrite(LED1,HIGH);
