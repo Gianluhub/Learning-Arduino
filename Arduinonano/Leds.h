@@ -1,11 +1,7 @@
+#ifndef Leds_h
+#define Leds_h
 
-// pines 
-#define LED1 6
-#define LED2 4
+void setup();
+void PrenderLed();
 
-void setup() {
-
-pinMode(LED1,OUTPUT);
-pinMode(LED2,OUTPUT);
-void PrenderLeds();
-}
+#endif

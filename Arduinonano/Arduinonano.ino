@@ -2,11 +2,27 @@
 #include <stdint.h>
 #include <string.h>
 #include "Leds.h"
-#include "PrenderLeds.h"
+
+
+const unsigned long interval = 1000;
+unsigned long previousTime = 0;
+
 
 
 
 void loop() {
-  PrenderLed();
+  
+  unsigned long currentTime = millis();
+
+  //PrenderLed();
+
+  if (currentTime - previousTime >= interval)
+  {
+    led(1);
+
+  }
+
+
+
 
 }
