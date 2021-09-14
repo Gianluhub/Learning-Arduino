@@ -41,3 +41,17 @@ void led (int tipo){
     break;  
   }
 }
+
+int timer(unsigned long interval){
+  static unsigned long previousTime = millis();
+  unsigned long currentTime = millis();
+
+  if (currentTime - previousTime >= interval)
+  {
+    previousTime = currentTime;
+    return true;
+  }
+  else return false;
+
+
+}

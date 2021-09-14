@@ -3,5 +3,6 @@
 
 void setup();
 void PrenderLed();
+int timer(unsigned long interval);
 
 #endif
