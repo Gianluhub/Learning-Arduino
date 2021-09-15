@@ -27,28 +27,39 @@ void PrenderLed(){
 
 void led (int tipo){
 
-  Serial.println("Activado\n")
+ 
   switch (tipo)
   {
     case 1:
       digitalWrite(LED1,!digitalRead(LED1));
-      Serial.println("Estado Led 1: %d \n",digitalRead(LED1));
+      Serial.println("\nEstado Led 1:");
+      Serial.println(digitalRead(LED1));
     break;
 
     case 2:
       digitalWrite(LED2,!digitalRead(LED2));
-      Serial.println("Estado Led 2 : %d \n",digitalRead(LED2));
+      Serial.println("\nEstado Led 2:");
+      Serial.println(digitalRead(LED2));
     break;  
   }
 }
 
 int timer(unsigned long interval){
-  static unsigned long previousTime = millis();
+
   unsigned long currentTime = millis();
+  static unsigned long previousTime = millis();
+  static int flag = 0;
+
+  if (flag == 1)
+  { 
+    previousTime = millis();
+    flag = 0;
+  }
+
 
   if (currentTime - previousTime >= interval)
   {
-    previousTime = currentTime;
+    flag = 1;
     return true;
   }
   else return false;

@@ -15,20 +15,19 @@ void loop() {
   unsigned long currentTime = millis();
 
   //PrenderLed();
-  delay(1000);
-  if (currentTime - previousTime >= interval)
+  //delay(1000);
+  if (currentTime - tiempoprevio >= intervalo)
   {
     led(1);
-    previousTime = currentTime;
+    tiempoprevio = currentTime;
 
   }
 
-  if (timer(2000)) 
+  if (timer(1000)) 
   {
-    serial.println("True\n");
+    //Serial.println("True\n");
     led(2);
   }
-  else serial.println('false\n');
 
 
 }
