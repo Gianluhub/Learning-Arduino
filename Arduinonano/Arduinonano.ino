@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <Nextion.h>
 #include "Leds.h"
-
 
 const unsigned long intervalo = 1000;
 unsigned long tiempoprevio = 0;

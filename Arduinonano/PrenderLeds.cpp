@@ -1,13 +1,38 @@
 #include <Arduino.h>
+#include <Nextion.h>
 #include "Leds.h"
+
 
 #define LED1 6
 #define LED2 4
 
+NexButton bOn = NexButton(0,5,"bOn");
+NexButton bOff = NexButton(0,6,"bOff");
+NexText tState = NexText(0,4,"tState");
+
+NexTouch *nex_listen_list[] = {
+  &bOn,
+  &bOff,
+  NULL
+};
+
+void bOnCallback(void *ptr){
+  tState.setText ("Led on");
+  digitalWrite(LED1,HIGH);
+}
+
+void bOffCallback(void *ptr){
+  tState.setText ("Led off");
+  digitalWrite(LED1,LOW);
+}
 void setup() {
 Serial.begin(9600);
 pinMode(LED1,OUTPUT);
 pinMode(LED2,OUTPUT);
+nexInit();
+
+bOn.attachPop(bOnCallback, &bOn);
+bOff.attachPop(bOffCallback, &bOff);
 
 }
 
@@ -43,6 +68,25 @@ void led (int tipo){
     break;  
   }
 }
+
+void LED (int estado){
+
+ 
+  switch (estado)
+  {
+    case 1:
+      digitalWrite(LED1,HIGH);
+      Serial.println("\nEncendido");
+    break;
+
+    case 2:
+      digitalWrite(LED1,LOW);
+      Serial.println("\nApagado");
+
+    break;  
+  }
+}
+
 
 int timer(unsigned long interval){
 
