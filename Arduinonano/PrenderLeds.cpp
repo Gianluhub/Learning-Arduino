@@ -3,39 +3,26 @@
 #include "Leds.h"
 
 
-#define LED1 6
-#define LED2 4
+extern NexButton bOn;
+extern NexButton bOff;
+extern NexText tState;
+extern NexButton b0;
+extern NexButton bNext;
+extern NexTouch *nex_listen_list[];
+extern char buffer[100];
 
-NexButton bOn = NexButton(0,5,"bOn");
-NexButton bOff = NexButton(0,6,"bOff");
-NexText tState = NexText(0,4,"tState");
-
-NexTouch *nex_listen_list[] = {
-  &bOn,
-  &bOff,
-  NULL
-};
-
-void bOnCallback(void *ptr){
-  tState.setText ("Led on");
-  digitalWrite(LED1,HIGH);
-}
-
-void bOffCallback(void *ptr){
-  tState.setText ("Led off");
-  digitalWrite(LED1,LOW);
-}
 void setup() {
-Serial.begin(9600);
+Serial2.begin(9600);
 pinMode(LED1,OUTPUT);
 pinMode(LED2,OUTPUT);
 nexInit();
 
 bOn.attachPop(bOnCallback, &bOn);
 bOff.attachPop(bOffCallback, &bOff);
+bNext.attachPop(bnextCallback,&bNext);
+b0.attachPop(b0Callback,&b0);
 
 }
-
 
 void PrenderLed(){
 
