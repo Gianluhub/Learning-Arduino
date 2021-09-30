@@ -1,0 +1,52 @@
+void Nextion_serial_listen() 
+{
+    if(Nextion.available() > 2){                // Read the Serial. If more than 2 bytes come (we always send more than 2, <#> <len> <cmd> <id>
+        char start_char = Nextion.read();      // Then, create a local variable (start_char). Read and store the first byte on it. 
+        if(start_char == '#'){                // And when we find the character <#>,
+          uint8_t len = Nextion.read();      // We create a local variable (len). Read and store the value of the second byte
+                                            // <len> is the length (number of bytes following) 
+          unsigned long tmr_1 = millis();
+          boolean cmd_found = true;
+            
+          while(Nextion.available() < len){ // Waiting for all the bytes that we declared with <len> to arrive              
+            if((millis() - tmr_1) > 100){    // Waiting... But not forever... 
+              cmd_found = false;              // tmr_1 is a timer to avoid getting stuck in the while loop if there are no available bytes on Serial
+              break;                           // We MUST NOT leave a while loop running without a timer, because for some reasons that we can not predict,
+                                                // the while loop could run forever. Example: a wire of the Serial could have been cut 
+            }                                     
+            delay(1);                            // Delay for nothing take it off if you think
+          }                                   
+                                               
+            if(cmd_found == true){            // So, A command is found (bytes in Serial buffer equal more than len)
+              uint8_t cmd = Nextion.read();  // Create local variable (cmd). Read and store the next byte. This is the command group
+                                             
+              switch (cmd){
+                                    
+                case 'P': /*or <case 0x50:> IF 'P' matches, we have the command group "Page". 
+                           *The next byte is the page <id> according to our protocol.
+                           *It reads the next byte as a type of <uint8_t variable> and direct sends it to:
+                           *first_refresh_page() function as parameter. 
+                           */
+                  first_refresh_page((uint8_t)Nextion.read());  
+                  break;
+                
+                case 'L': 
+                /* < case 0x4C: > (0x4c = ‘L’) IF there is a matching with 'L' then we have the command group "Line" according to the protocol
+                 * We are waiting 2 more bytes from the <nextion_var> and the <cnt>... (<#> <len> <cmd> <nextion_var> <cnt>)
+                 * <nextion_var> is the Number of the variable on Nextion that we want to write
+                 * <cnt> is the number of the text array Line that we want to store into Nextion's variable
+                 * From Nextion we have sent < printh 23 04 4C 04 xx > where 04, in this example, the <nextion_var> and xx the <cnt>
+                 * Same as the above, we are going to read the next 2 bytes as <uint8_t> and direct send them to
+                 * < sending_text () > function as parameters to the local variables of the function 
+                 * < sending_text(byte nextion_var, byte cnt) > that will be created on startup of the Function
+                 */
+
+                    sending_text((uint8_t)Nextion.read(),(uint8_t)Nextion.read()); 
+                    
+                break;
+                
+              }
+            }
+        }  
+    }    
+}

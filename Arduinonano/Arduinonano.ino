@@ -4,7 +4,9 @@
 #include <Nextion.h>
 #include "Leds.h"
 
-char buffer[100] = {0};
+char buffer[20] = {0};
+char trama[18] = {0};
+int temperatura[2] = {0};
 
 const unsigned long intervalo = 1000;
 unsigned long tiempoprevio = 0;
@@ -37,27 +39,83 @@ void bOffCallback(void *ptr){
 }
 
 void bnextCallback(void *ptr){
-  String data;
+  //String data;
   memset(buffer, 0, sizeof(buffer));  // Clear the buffer, so we can start using it
- data= bNext.getText(buffer, sizeof(buffer));
-  Serial.println(data);
+  bNext.getText(buffer, sizeof(buffer));
+  Serial.println(buffer);
+  desentramado(trama,temperatura);
+  Serial.println(trama);
+  Serial.println(temperatura[0]);
+  Serial.println(temperatura[1]);
   
 }
 
 
 void b0Callback(void *ptr){
-  String data;
+  //String data;
   memset(buffer, 0, sizeof(buffer));  // Clear the buffer, so we can start using it
-  data = b0.getText(buffer, sizeof(buffer));
-  Serial.println(data);
-  
+  b0.getText(buffer, sizeof(buffer));
+  Serial.println(buffer);
+  desentramado(trama,temperatura);
+  Serial.println(trama);
+  Serial.println(temperatura[0]);
+  Serial.println(temperatura[1]);
 }
 
+void desentramado(char trama[],int temperatura[]){
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  //char trama[18] = {0};
+  char aux[4] = {0};
+  //int temperatura[2] = {0};
+  
+  // Extrae los datos hasta que se lea el caracter de fin 'X'
+  do
+  {
+    // Revisa si hay un dato nuevo que tomar
+    if(buffer[i] == '+')
+    {
+      trama[j] = buffer[i+1]; // Toma el dato siguiente
+      i+=2;                   // Incrementa en dos para saltar al siguiente dato a extraer
 
+
+      // Verifica si es necesario extraer un valor de temperatura
+      if (buffer[i] == '-')
+      {
+        i++;                  // Incrementa al siguiente dato a extraer
+
+        // Guarda los valores hasta que se lea el caracter de fin '-'
+        do
+        {
+          aux[k] = buffer[i];
+          k++;
+          i++;
+        }while(buffer[i]!='-');
+
+        // Si la temperatura pertenece a la del poliester guarda ese valor en la posicion 0 del array
+        if(trama[j] == 'D') temperatura[0] = String(aux).toInt();  // Convierte los caracteres a un entero y se guarda
+
+        // Si la temperatura pertenece a la del algodon guarda ese valor en la posicion 1 del array
+        if(trama[j] == 'E') temperatura[1] = String(aux).toInt();  // Convierte los caracteres a un entero y se guarda
+
+        memset(aux, 0, sizeof(aux));  // Limpia el auxiliar para la siguiente interacion
+        k = 0;                        // Reinicia el indice del auxiliar
+        i++;                          // Incrementa la trama al siguiente dato a leer
+      }
+
+      j++;                          // Incrementa la posicion del array trama
+
+    }
+    
+  }while(buffer[i]!='X');
+}
 
 
 void loop() {
   
+
+
 //  unsigned long currentTime = millis();
 //
 //  //PrenderLed();
@@ -74,6 +132,8 @@ void loop() {
 //    //Serial.println("True\n");
 //    led(2);
 //  }
-
 nexLoop(nex_listen_list);
+
+
+
 }
